@@ -43,11 +43,11 @@ jobs:
     # URL is grabbed from golang-migrate Github (specifically the Releases page to ensure the correct version is installed)
     # The binary needs to be moved to the /usr/bin folder in order for migrate command to work
     # Pipe command indicates multiline command
-    # The mv command moves the file (file name found from manually unzipping the tar.gz file) and renames it to migrate (as migrate doesn't exist)
+    # The mv command moves the file (file name found from manually unzipping the tar.gz file)
     # The which command confirms that migrate CLI is installed and ready to use
       run: |
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate.linux-amd64 /usr/bin/migrate
+        sudo mv migrate /usr/bin/
         which migrate
     
     - name: Run migrations
