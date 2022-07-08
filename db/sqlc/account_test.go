@@ -13,8 +13,10 @@ import (
 // since every unit test will need to create an account for testing the CRUD ops - we create a func which we can call to avoid code duplication
 // this allows us to modify a unit test function without impacting every other unit test function - e.g. if we used TestCreateAccount to create accounts for all unit tests and then modified it
 func createRandomAccount(t *testing.T) Account {
+	// due to the foreign key constraint on account's owner (must tie back to a user), we generate a user first
+	user := createRandomUser(t)
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		Owner:    user.Username,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -92,20 +94,26 @@ func TestDeleteAccount(t *testing.T) {
 
 func TestListAccounts(t *testing.T) {
 	// always begin by creating accounts - since we need to return a slice of account objects, we need to create a few accounts to test with
+	// retroactively adding filter by owner/username breaks test - to resolve, we grab the owner of the last randomly generated
+	// account and use it in the owner property of ListAccountsParams
+	var lastAccount Account
 	for i := 0; i < 10; i++ {
-		createRandomAccount(t)
+		// update lastAccount until it finally has the last account
+		lastAccount = createRandomAccount(t)
 	}
 
 	arg := ListAccountsParams{
+		Owner:  lastAccount.Owner,
 		Limit:  5, // return five account objects in the slice of account objects - even if the table starts out empty, 10 accounts are created for testing so five must be returned
-		Offset: 5, // skip the first five account objects
+		Offset: 0, // skip the first "x" account objects
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), arg)
-	require.NoError(t, err)     // err must be nil, meaning no errors
-	require.Len(t, accounts, 5) // the length of the slice must be 5 - since we are not looping through the database, even in the scenario where the table is empty, 10 accounts are created so five must be returned
+	require.NoError(t, err) // err must be nil, meaning no errors
+	require.NotEmpty(t, accounts)
 
 	for _, account := range accounts {
-		require.NotEmpty(t, account) // each account in the list must not be empty
+		require.NotEmpty(t, account)                       // each account in the list must not be empty
+		require.Equal(t, lastAccount.Owner, account.Owner) // each account must have an owner that matches the lastAccount.Username
 	}
 }

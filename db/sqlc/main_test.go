@@ -8,12 +8,7 @@ import (
 
 	// lib/pq provides postgres driver support
 	_ "github.com/lib/pq" // the underscore is a blank identifier - it tells the Go formatter to leave this import even though we do not directly call any functions from lib/pq
-)
-
-// eventually, this will be done via pulling from environment variables and not constants
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
+	"github.com/techschool/simplebank/db/util"
 )
 
 // queries struct defined in db.go - contains DBTX variable - either a db connection or a transaction
@@ -21,9 +16,12 @@ var testQueries *Queries // global variable to test CRUD ops - you need a querie
 var testDB *sql.DB       // global variable to use in testing db transactions
 
 func TestMain(m *testing.M) {
-	var err error
+	config, err := util.LoadConfig("../..") // go up two folder levels - first to the db folder and then to the root project folder
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
 
-	testDB, err = sql.Open(dbDriver, dbSource) // sql.Open() returns a sql db object and an error
+	testDB, err = sql.Open(config.DBDriver, config.DBSource) // sql.Open() returns a sql db object and an error
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
