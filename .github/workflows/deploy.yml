@@ -1,0 +1,41 @@
+# Will use this workflow to build docker image and deploy to production
+name: Deploy to production
+
+on:
+  push:
+  # Only trigger when there is a push on to main branch
+    branches: [ "main" ]
+
+# Can be assigned at the job or workflow level
+permissions:
+  # ID-TOKEN: WRITE allows the JWT to be requested from GitHub's OIDC provider
+  id-token: write
+  # may need contents: read which is required for actions/checkout
+
+jobs:
+
+  build:
+    name: Build image
+    # Github hosted runner
+    runs-on: ubuntu-latest
+       
+    steps: 
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
+        aws-region: us-east-1
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: my-ecr-repo
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
