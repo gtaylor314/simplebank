@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:14.3-alpine
+    environment: 
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=simple_bank
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable
+    # depends_on only waits for postgres to start, not for the database to be ready before starting the api service 
+    depends_on:
+      - postgres
+    # we use the wait-for.sh script to wait for the postgres db to be ready before running the start.sh script
+    # since we overwrite the entrypoint in the compose.yaml file, both the entrypoint and cmd in Dockerfile are ignored
+    # we therefore explicity call command here
+    entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+    command: [ "/app/main" ]
