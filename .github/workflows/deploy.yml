@@ -10,7 +10,8 @@ on:
 permissions:
   # id-token: write - allows the JWT to be requested from GitHub's OIDC provider
   id-token: write
-  # may need contents: read which is required for actions/checkout
+  # contents: read - required for actions/checkout
+  contents: read 
 
 jobs:
 
@@ -20,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
        
     steps: 
+    
+    - name: Check out code 
+      uses: actions/checkout@v2
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
