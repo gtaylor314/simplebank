@@ -10,7 +10,7 @@ echo "run db migration"
 # use $DB_SOURCE for the database URL - it will pull from the compose.yaml file if using docker compose up command
 # if not using docker compose up cmd, we need to use source app.env to load the configuration into the docker container
 # before running the migrate command
-source app.env
+source /app/app.env
 /app/migrate -path /app/migration -database "$DB_SOURCE" -verbose up
 
 echo "start the app"
