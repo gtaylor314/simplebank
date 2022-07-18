@@ -1,0 +1,23 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: simple-bank-api-deployment # name of object
+  labels: # attaches to the object - used below for the selector option - allows for selecting a subset of objects
+    app: simple-bank-api 
+spec: # spec for the deployment
+  replicas: 1 # number of pods we want to run with the template defined below
+  selector: # which pod(s) should be managed by this deployment
+    matchLabels: # those with the below label - simple-bank-api
+      app: simple-bank-api 
+  template: # the template the deployment will use - pods will run with this template
+    metadata:
+      labels: # must have this label for the deployment to manage the pod(s)
+        app: simple-bank-api
+    spec: # spec for the pod(s) - how to deploy the containers
+      containers:
+      - name: simple-bank-api
+        # URI of the image we deployed in AWS ECR (us-east-1)
+        # we use the tag latest in order to automate redeployments of the container when a new image is pushed
+        image: 787608098916.dkr.ecr.us-east-1.amazonaws.com/simplebank:latest
+        ports: 
+        - containerPort: 8080 # which port should the container expose to the network

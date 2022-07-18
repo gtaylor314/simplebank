@@ -1,0 +1,14 @@
+# we can define a set of network rules to route traffic into and out of the Kubernetes cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-bank-api-service # name of this service object
+spec: 
+  selector: # which pods should the service object apply to 
+    app: simple-bank-api
+  ports: 
+    - protocol: TCP
+      port: 80 # service object will listen for incoming API requests on port 80 (HTTP)
+      targetPort: 8080 # port the container will receive API requests on
+      # by default the type is cluster IP but this provides no external IP which we would need for outside access
+  type: LoadBalancer # LoadBalancer would provide an external IP for such access 
