@@ -56,12 +56,16 @@ jobs:
         # Using the GitHub SHA of the commit to tag the docker image
         IMAGE_TAG: ${{ github.sha }}
       # Build the docker image locally and then push to AWS
-      # the -t latest sets the image tag to latest when docker build is run
+      # the -t $REGISTRY/$REPOSITORY:latest sets the image tag to latest when docker build is run
       # the -a pushes all tags to AWS ECR
       run: |
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t latest . 
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest . 
         docker push -a $REGISTRY/$REPOSITORY
-        
+      
+    # Need to update kube config in order to point kubectl from localhost to our AWS EKS Cluster
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name simple-bank --region us-east-2
+    
     - name: Deploy image to AWS EKS Cluster (container)
       run: | 
         kubectl apply -f eks/deployment.yaml
