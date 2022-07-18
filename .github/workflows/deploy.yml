@@ -15,8 +15,8 @@ permissions:
 
 jobs:
 
-  build:
-    name: Build image
+  deploy:
+    name: Build image and deploy container with app
     # Github hosted runner
     runs-on: ubuntu-latest
        
@@ -24,6 +24,14 @@ jobs:
     
     - name: Check out code 
       uses: actions/checkout@v2
+    
+    - name: Install kubectl
+      # Installing kubectl allows us to deploy the image we build to a container and then configure it
+      # Enables use of kubectl commands
+      uses: azure/setup-kubectl@v1
+      with: 
+        version: 'v1.24.3'
+      id: install
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -48,6 +56,14 @@ jobs:
         # Using the GitHub SHA of the commit to tag the docker image
         IMAGE_TAG: ${{ github.sha }}
       # Build the docker image locally and then push to AWS
+      # the -t latest sets the image tag to latest when docker build is run
+      # the -a pushes all tags to AWS ECR
       run: |
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . 
-        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t latest . 
+        docker push -a $REGISTRY/$REPOSITORY
+        
+    - name: Deploy image to AWS EKS Cluster (container)
+      run: | 
+        kubectl apply -f eks/deployment.yaml
+        kubectl apply -f eks/service.yaml
+        kubectl apply -f eks/ingress.yaml
