@@ -18,6 +18,6 @@ COPY db/migration ./migration
 
 EXPOSE 8080
 CMD ["/app/main"]
-# changing mode to allow start.sh to be executable
-RUN chmod +x /app/start.sh
+# changing mode to allow start.sh to be executable - needed for execution on AWS EC2 node
+# RUN chmod +x /app/start.sh
 ENTRYPOINT [ "/app/start.sh" ]
