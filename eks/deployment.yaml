@@ -19,5 +19,9 @@ spec: # spec for the deployment
         # URI of the image we deployed in AWS ECR (us-east-1)
         # we use the tag latest in order to automate redeployments of the container when a new image is pushed
         image: 787608098916.dkr.ecr.us-east-1.amazonaws.com/simplebank:latest
+        # if there is already an image with the image tag latest on the contiainer, it will just use the current image
+        # this means the new image in ECR will not be pulled - imagePullPolicy set to Always, means that the image will
+        # always be pulled
+        imagePullPolicy: Always
         ports: 
         - containerPort: 8080 # which port should the container expose to the network
