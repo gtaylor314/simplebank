@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
+	"SimpleBankProject/db/util"
 	// lib/pq provides postgres driver support
 	_ "github.com/lib/pq" // the underscore is a blank identifier - it tells the Go formatter to leave this import even though we do not directly call any functions from lib/pq
-	"github.com/techschool/simplebank/db/util"
 )
 
 // queries struct defined in db.go - contains DBTX variable - either a db connection or a transaction

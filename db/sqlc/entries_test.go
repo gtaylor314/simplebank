@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"SimpleBankProject/db/util" //provides random generator functions we defined in random.go
+
 	"github.com/stretchr/testify/require"
-	"github.com/techschool/simplebank/db/util" //provides random generator functions we defined in random.go
 )
 
 // createRandomEntry will create entries for the other test functions to use

@@ -7,9 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"SimpleBankProject/token"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
-	"github.com/techschool/simplebank/token"
 )
 
 // addAuthorization creates an access token and adds it to the authorization header
@@ -22,8 +23,9 @@ func addAuthorization(
 	duration time.Duration,
 ) {
 	// create token
-	token, err := tokenMaker.CreateToken(username, duration)
+	token, payload, err := tokenMaker.CreateToken(username, duration)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 	// create authorization header - remember, it should be two strings separated by a space
 	// first the authorizationType (bearer) and the token itself
 	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, token)

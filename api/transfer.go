@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	db "SimpleBankProject/db/sqlc"
+	"SimpleBankProject/token"
+
 	"github.com/gin-gonic/gin"
-	db "github.com/techschool/simplebank/db/sqlc"
-	"github.com/techschool/simplebank/token"
 )
 
 type transferRequest struct {

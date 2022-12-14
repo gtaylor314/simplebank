@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"SimpleBankProject/db/util"
+
 	"github.com/stretchr/testify/require"
-	"github.com/techschool/simplebank/db/util"
 )
 
 // needed for TestListTransfers - enables multiple transfers to be created using specific account IDs

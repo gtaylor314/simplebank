@@ -1,8 +1,9 @@
 package api
 
 import (
+	"SimpleBankProject/db/util"
+
 	"github.com/go-playground/validator/v10"
-	"github.com/techschool/simplebank/db/util"
 )
 
 // validCurrency will take a fieldLevel and return true when it is validated

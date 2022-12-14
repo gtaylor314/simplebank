@@ -3,12 +3,13 @@ package api
 import (
 	"fmt"
 
+	db "SimpleBankProject/db/sqlc"
+	"SimpleBankProject/db/util"
+	"SimpleBankProject/token"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
-	db "github.com/techschool/simplebank/db/sqlc"
-	"github.com/techschool/simplebank/db/util"
-	"github.com/techschool/simplebank/token"
 )
 
 // Implementing our HTTP API server
@@ -95,9 +96,12 @@ func (server *Server) setupRouter() {
 	// no authorization needed as everyone should be able to create a user
 	router.POST("/users", server.createUser) // createUser - method of the Server struct - handler
 	// user login
-	// "/users/login" path for login api
+	// "/users/login" path for loginUser handler
 	// no authorization needed as everyone should be able to login
 	router.POST("/users/login", server.loginUser) // loginUser - method of the Server struct - handler
+	// renew access token
+	// "/tokens/renew_access" path for renewAccess handler
+	router.POST("/tokens/renew_access", server.renewAccessToken) // renewAccessToken - method of the Server struct - handler
 
 	// update server.router with router object
 	server.router = router

@@ -5,10 +5,11 @@ import (
 	"errors"
 	"net/http"
 
+	db "SimpleBankProject/db/sqlc"
+	"SimpleBankProject/token"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
-	db "github.com/techschool/simplebank/db/sqlc"
-	"github.com/techschool/simplebank/token"
 )
 
 // owner and currency will be specified by customer

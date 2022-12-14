@@ -12,12 +12,13 @@ import (
 	"testing"
 	"time"
 
+	mockdb "SimpleBankProject/db/mock"
+	db "SimpleBankProject/db/sqlc"
+	"SimpleBankProject/db/util"
+	"SimpleBankProject/token"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	mockdb "github.com/techschool/simplebank/db/mock"
-	db "github.com/techschool/simplebank/db/sqlc"
-	"github.com/techschool/simplebank/db/util"
-	"github.com/techschool/simplebank/token"
 )
 
 func TestCreateAccountAPI(t *testing.T) {

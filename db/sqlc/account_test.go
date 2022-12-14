@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"      // stretchr/testify makes several packages available that provides testing tools
-	"github.com/techschool/simplebank/db/util" // provides random generator functions that we defined in random.go
+	"SimpleBankProject/db/util" // provides random generator functions that we defined in random.go
+
+	"github.com/stretchr/testify/require" // stretchr/testify makes several packages available that provides testing tools
 )
 
 // since every unit test will need to create an account for testing the CRUD ops - we create a func which we can call to avoid code duplication
