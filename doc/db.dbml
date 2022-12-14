@@ -1,0 +1,78 @@
+Project simple_bank {
+    database_type: 'PostgreSQL'
+    Note: '''
+    # Simple Bank Database
+    '''
+}
+
+//// -- LEVEL 1
+//// -- Tables and References
+
+// Creating tables
+Table accounts as A { // A is an alias for accounts table 
+  id bigserial [pk] // PostgreSQL auto-increment id - pk = primary key
+  owner varchar [ref: > U.username, not null] // must have a value
+  balance bigint [not null]
+  currency varchar [not null] // prefered to use built-in type
+  // currency Currency [not null] - defined custom Enum Currency below
+  created_at timestamptz [not null, default: 'now()']// includes time and time zone automatically set by db 
+
+  Indexes {
+    owner // search for account by owner name 
+    (owner, currency) [unique]// composite, unique index - will use to prevent users from having multiple accounts with the same type of currency
+  }
+  
+}
+
+Table users as U {
+  username varchar [pk]
+  hashed_password varchar [not null]
+  full_name varchar [not null]
+  email varchar [unique, not null]
+  password_change_at timestamptz [not null, default: '0001-01-01 00:00:00+00'] // if the password has never been changed, the default is set to a long time ago yyyy-mm-dd hh-mm-ss-UTC
+  created_at timestamptz [not null, default: 'now()']
+}
+
+Table sessions {
+  id uuid [pk]
+  username varchar [ref: > U.username, not null]
+  refresh_token varchar [not null]
+  user_agent varchar [not null]
+  client_ip varchar [not null]
+  is_blocked boolean [not null, default: 'false']
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null, default: 'now()']
+}
+
+Table entries { // table records all changes to balance
+  id bigserial [pk]
+  account_id bigint [ref: > A.id, not null] // foreign key references id column of accounts table 
+  amount bigint [not null, note: 'can be negative or positive'] // can be negative or positive depending on withdraw or deposit
+  created_at timestamptz [not null, default: 'now()'] // records when entry was created 
+ 
+  Indexes {
+    account_id // allow us to list all entries for a given account id
+  }
+  
+}
+
+Table transfers { // records money transfered between two accounts 
+  id bigserial [pk] // PostgreSQL auto-increment id - pk = primary key
+  from_account_id bigint [ref: > A.id, not null] //transfering from internal account 
+  to_account_id bigint [ref: > A.id, not null] // transfering to internal account 
+  amount bigint [not null, note: 'must be positive'] // must be positive
+  created_at timestamptz [not null, default: 'now()']
+
+  Indexes {
+    from_account_id // allow us to list all transfers from an account 
+    to_account_id // allow us to list all transfers to an account 
+    (from_account_id, to_account_id) // composite index to search for all transfers from a specific account to a specific account
+  }
+  
+}
+
+// Enum Currency { data type that comprises a static, ordered set of values - used in table accounts if we wanted
+//  USD 
+//  EUR
+//}
+

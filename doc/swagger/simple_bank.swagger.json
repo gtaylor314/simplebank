@@ -1,0 +1,225 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Simple Bank API",
+    "version": "1.1",
+    "contact": {
+      "name": "Garrett Taylor",
+      "url": "https://github.com/gtaylor314/simplebank",
+      "email": "gtaylor314@icloud.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "SimpleBank"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/create_user": {
+      "post": {
+        "summary": "Create New User",
+        "description": "API to Create New User",
+        "operationId": "SimpleBank_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleBank"
+        ]
+      }
+    },
+    "/v1/login_user": {
+      "post": {
+        "summary": "Login User",
+        "description": "API to Login User and Get Both Access Token and Refresh Token",
+        "operationId": "SimpleBank_LoginUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbLoginUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbLoginUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleBank"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbCreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "title": "type, name of field and field number\nfield number will uniquely define the field when serializing or deserializing the message in binary format"
+        },
+        "password": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "title": "define what fields the CreateUserRequest object will hold"
+    },
+    "pbCreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pbUser",
+          "title": "an object of type User object defined in user.proto - imported above"
+        }
+      },
+      "title": "define what the CreateUserResponse object will hold"
+    },
+    "pbLogin": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "title": "type, name of field and field number\nfield number will uniquely define the field when serializing or deserializing the message in binary format"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/pbUser"
+        }
+      },
+      "title": "define what fields a login object will have"
+    },
+    "pbLoginUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "title": "type, name of field and field number\nfield number will uniquely define the field when serializing or deserializing the message in binary format"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "define what fields the LoginUserRequest object will hold"
+    },
+    "pbLoginUserResponse": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "$ref": "#/definitions/pbLogin",
+          "title": "an object of type Login defined in login.proto - imported above"
+        }
+      },
+      "title": "define what fields the LoginUserResponse object will hold"
+    },
+    "pbUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "title": "type, name of field and field number\nfield number will uniquely define the field when serializing or deserializing the message in binary format"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "passwordChangeAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "define what fields the user object will hold"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
