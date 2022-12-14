@@ -1,0 +1,27 @@
+// tells protobuf compiler which version we are using
+syntax = "proto3"; 
+
+// a way of grouping proto files together
+package pb; 
+
+import "user.proto";
+
+// identify which golang package we want protobuf to generate the Golang code to
+// it should be a subpackage of the root module we specified in go.mod 
+option go_package = "SimpleBankProject/pb"; 
+
+// define what fields the CreateUserRequest object will hold
+message CreateUserRequest {
+    // type, name of field and field number
+    // field number will uniquely define the field when serializing or deserializing the message in binary format
+    string username = 1;
+    string password = 2;
+	string full_name = 3;
+	string email = 4;
+}
+
+// define what the CreateUserResponse object will hold
+message CreateUserResponse {
+    // an object of type User object defined in user.proto - imported above
+    User user = 1;
+}

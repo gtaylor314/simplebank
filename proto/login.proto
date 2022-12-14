@@ -1,0 +1,24 @@
+// tells protobuf compiler which version we are using
+syntax = "proto3"; 
+
+// a way of grouping proto files together
+package pb; 
+
+import "google/protobuf/timestamp.proto";
+import "user.proto";
+
+// identify which golang package we want protobuf to generate the Golang code to
+// it should be a subpackage of the root module we specified in go.mod 
+option go_package = "SimpleBankProject/pb"; 
+
+// define what fields a login object will have
+message Login {
+    // type, name of field and field number
+    // field number will uniquely define the field when serializing or deserializing the message in binary format
+    string session_id = 1;
+    string access_token = 2;
+    google.protobuf.Timestamp access_token_expires_at = 3;
+    string refresh_token = 4;
+    google.protobuf.Timestamp refresh_token_expires_at = 5;
+    User user = 6;
+}

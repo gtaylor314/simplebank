@@ -4,9 +4,10 @@ import (
 	"testing"
 	"time"
 
+	"SimpleBankProject/db/util"
+
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/require"
-	"github.com/techschool/simplebank/db/util"
 )
 
 func TestJWTMaker(t *testing.T) {
@@ -23,12 +24,13 @@ func TestJWTMaker(t *testing.T) {
 	expiredAt := issuedAt.Add(duration)
 
 	// create token
-	token, err := maker.CreateToken(username, duration)
+	token, payload, err := maker.CreateToken(username, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
+	require.NotEmpty(t, payload)
 
 	// get payload data
-	payload, err := maker.VerifyToken(token)
+	payload, err = maker.VerifyToken(token)
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 	require.NotZero(t, payload.ID)
@@ -43,12 +45,13 @@ func TestExpiredJWTToken(t *testing.T) {
 	require.NoError(t, err)
 
 	// we create an expired token using a negative duration with CreateToken method
-	token, err := maker.CreateToken(util.RandomOwner(), -time.Minute)
+	token, payload, err := maker.CreateToken(util.RandomOwner(), -time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
+	require.NotEmpty(t, payload)
 
 	// grab payload data
-	payload, err := maker.VerifyToken(token)
+	payload, err = maker.VerifyToken(token)
 	require.Error(t, err)
 	require.EqualError(t, err, ErrExpiredToken.Error())
 	require.Nil(t, payload)

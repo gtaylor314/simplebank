@@ -1,0 +1,58 @@
+// tells protobuf compiler which version we are using
+syntax = "proto3"; 
+
+// a way of grouping proto files together
+package pb; 
+
+import "google/api/annotations.proto"; // needed for custom settings in the rpcs
+import "rpc_create_user.proto";
+import "rpc_login_user.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// identify which golang package we want protobuf to generate the Golang code to
+// it should be a subpackage of the root module we specified in go.mod 
+option go_package = "SimpleBankProject/pb"; 
+
+// option to define the title and version information for the swagger documentation
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Simple Bank API";
+    version: "1.1";
+    contact: {
+      name: "Garrett Taylor";
+      url: "https://github.com/gtaylor314/simplebank";
+      email: "gtaylor314@icloud.com";
+    };
+  };
+};
+
+service SimpleBank {
+    // defining rpc CreateUser, takes a CreateUserRequest object, returns a CreateUserResponse
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
+        // can specify custom settings here
+        option (google.api.http) = {
+            // specify the route - v1 is the version of the api (best practice to use api versioning)
+            post: "/v1/create_user" 
+            // parameters of the request will be sent in the body
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "API to Create New User"
+            summary: "Create New User"
+        };
+    }
+    // defining rpc LoginUser, takes a LoginUserRequest object, returns a LoginUserResponse
+    rpc LoginUser (LoginUserRequest) returns (LoginUserResponse){
+        // can specify custom settings here
+        option (google.api.http) = {
+            // specify the route - v1 is the version of the api (best practice to use api versioning)
+            post: "/v1/login_user" 
+            // parameters of the request will be sent in the body
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "API to Login User and Get Both Access Token and Refresh Token"
+            summary: "Login User"
+      };
+    }
+}
