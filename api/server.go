@@ -43,7 +43,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		// registering the custom validator
 		// currency is the name of the validation tag
-		// validCurrency is the method in transfer.go
+		// validCurrency is the method in validator.go
 		v.RegisterValidation("currency", validCurrency)
 	}
 	//setup routes
