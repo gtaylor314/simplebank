@@ -15,7 +15,7 @@ var (
 
 // Payload will contain the payload data of the token
 type Payload struct {
-	ID        uuid.UUID `json:"id"` // can use ID to invalid tokens in the future if found to be leaked
+	ID        uuid.UUID `json:"id"` // can use ID to invalidate tokens in the future if found to be leaked
 	Username  string    `json:"username"`
 	IssuedAt  time.Time `json:"issued_at"`  // when the token was created
 	ExpiredAt time.Time `json:"expired_at"` //when the token will expire
