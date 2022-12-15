@@ -158,7 +158,7 @@ func runGinServer(config util.Config, store db.Store) {
 		log.Fatal("cannot create server:", err)
 	}
 
-	// start the server passing HTTPServerAddress (a constant for now)
+	// start the server passing HTTPServerAddress 
 	err = server.Start(config.HTTPServerAddress)
 	if err != nil {
 		log.Fatal("cannot start server:", err)
